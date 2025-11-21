@@ -40,6 +40,21 @@ ML_model/
 *.feather
 *.xlsx
 
+*.pt
+*.bin
+*.h5
+*.pkl
+*.ckpt
+*.onnx
+*.zip
+*.rar
+*.7z
+*.mp4
+*.mov
+models/**
+data/**
+
+
 # HuggingFace cache
 ~/.cache/huggingface/
 hf_cache/
