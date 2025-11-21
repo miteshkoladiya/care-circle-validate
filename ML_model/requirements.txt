@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pandas
+transformers
+sentence-transformers
+langchain
+langchain-community
+faiss-cpu
+torch

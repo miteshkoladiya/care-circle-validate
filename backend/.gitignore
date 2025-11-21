@@ -1,0 +1,41 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript sources (project migrated to JS/JSX)
+*.ts
+*.tsx
+*.d.ts
+
+# Environment variables
+.env
+.env.*.local
+
+# Auto-created helper files (local only)
+scripts/findEnvUsage.*
+scripts/listTmpDoctorFiles.*
+scripts/cleanAutoFiles.*
+tmp/doctor-doc.txt
+tmp/testAuth.js

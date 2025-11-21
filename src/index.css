@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* White and red healthcare theme */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    /* Primary red - professional medical */
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 0 84% 55%;
+
+    /* Soft white/gray tones */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Light red accent */
+    --accent: 0 84% 60%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 0 45% 93%;
+
+    /* Status colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 27% 84%;
+    --input: 213 27% 84%;
+    --ring: 213 89% 42%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 0% 9%;
+    --foreground: 0 0% 96%;
+
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 0 84% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 0 84% 60%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 84% 65%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 0 25% 15%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 43 96% 65%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 84% 70%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 19% 18%;
+    --input: 213 19% 18%;
+    --ring: 213 89% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+/* Medical-specific gradients and effects */
+:root {
+  --gradient-healthcare: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+  --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+  --shadow-healthcare: 0 10px 30px -10px hsl(var(--primary) / 0.15);
+  --shadow-card: 0 4px 6px -1px hsl(var(--primary) / 0.1);
+}
+
+/* Responsive base typography */
+html { font-size: 14px; }
+@media (min-width: 640px) { html { font-size: 15px; } }
+@media (min-width: 1024px) { html { font-size: 16px; } }
+
+/* Card helpers */
+.card-clickable {
+  @apply cursor-pointer transition-transform transform hover:-translate-y-0.5 hover:shadow-card;
+}
+
+/* Better image handling in posts / covers */
+.post-image {
+  @apply w-full object-cover rounded-md border;
+}
+
+/* Community cover hover effect */
+.community-cover {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  will-change: transform;
+  transform-origin: center;
+}
+.community-cover:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+}
+
+/* smaller preview variant for admin list/preview */
+.community-cover-sm {
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  will-change: transform;
+  transform-origin: center;
+}
+.community-cover-sm:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+}
+
+/* Chat widget responsive tweaks */
+.chat-widget-mobile {
+  /* applied to root chat panel to allow full width on very small screens */
+  @apply w-full sm:w-96;
+}
+
+/* Utility for truncated multi-line text */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Accessibility: focus-visible outlines for keyboard users */
+:focus-visible {
+  outline: 2px solid rgba(59,130,246,0.6);
+  outline-offset: 2px;
+}
+
+/* small screens: reduce container padding for denser layout */
+@media (max-width: 420px) {
+  .container { padding-left: 0.5rem; padding-right: 0.5rem; }
+}
+
+/* Chat icon gentle motion (only when closed) */
+@keyframes chat-icon-bounce {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-6px) scale(1.02); }
+  70% { transform: translateY(-2px) scale(1.01); }
+  100% { transform: translateY(0); }
+}
+.chat-icon-animate {
+  animation: chat-icon-bounce 2.2s cubic-bezier(.22,.9,.35,1) infinite;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .chat-icon-animate { animation: none !important; }
+}
+
+.post-validated {
+  @apply border-2 border-green-300 bg-green-50 relative;
+}
+.post-validated::after {
+  content: "Validated";
+  @apply absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full bg-green-600 text-white tracking-wide;
+}
