@@ -30,6 +30,7 @@ outputs/
 checkpoints/
 models/
 runs/
+ML_model/
 
 # Datasets
 *.csv
