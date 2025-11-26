@@ -11,8 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Heart, User, Settings, LogOut, Bell } from "lucide-react";
-import { Menu } from "lucide-react";
+import { Heart, User, Settings, LogOut, Bell, Menu } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function Navbar({ user: userProp, onLogout }) {
@@ -43,33 +42,37 @@ export function Navbar({ user: userProp, onLogout }) {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-all duration-200">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="flex items-center space-x-2">
-            <Heart className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">CareCircle</span>
+        <div className="flex items-center space-x-6">
+          <Link to="/" className="flex items-center space-x-2 group">
+            <div className="p-1.5 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+              <Heart className="h-6 w-6 text-primary fill-primary/20" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">CareCircle</span>
           </Link>
 
           {user && (
             <>
-              <div className="hidden md:flex items-center space-x-6 ml-8">
-              <Link to="/dashboard" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === "/dashboard" ? "text-primary" : "text-muted-foreground"}`}>
-                Dashboard
-              </Link>
-              <Link to="/communities" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === "/communities" ? "text-primary" : "text-muted-foreground"}`}>
-                Communities
-              </Link>
-              {(user.role === "Doctor" || user.role === "Admin" || user.role === "SuperAdmin") && (
-                <Link to="/validation" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === "/validation" ? "text-primary" : "text-muted-foreground"}`}>
-                  Validation
-                </Link>
-              )}
-              {(user.role === "Admin" || user.role === "SuperAdmin") && (
-                <Link to="/admin" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith("/admin") ? "text-primary" : "text-muted-foreground"}`}>
-                  Admin
-                </Link>
-              )}
+              <div className="hidden md:flex items-center space-x-1 ml-6">
+                {[
+                  { path: "/dashboard", label: "Dashboard" },
+                  { path: "/communities", label: "Communities" },
+                  (user.role === "Doctor" || user.role === "Admin" || user.role === "SuperAdmin") && { path: "/validation", label: "Validation" },
+                  (user.role === "Admin" || user.role === "SuperAdmin") && { path: "/admin", label: "Admin" }
+                ].filter(Boolean).map(link => (
+                  <Link 
+                    key={link.path} 
+                    to={link.path} 
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      location.pathname.startsWith(link.path) && link.path !== '/' 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:text-primary hover:bg-muted"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
               {/* mobile menu button */}
               <div className="md:hidden ml-2">

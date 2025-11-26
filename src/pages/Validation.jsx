@@ -88,6 +88,14 @@ export default function Validation() {
     } catch (e) { toast({ title: 'Approve failed', description: e?.message || String(e) }); }
   };
 
+  const sortedItems = React.useMemo(() => {
+    return [...items].sort((a, b) => {
+      if (a.validationStatus === 'validated' && b.validationStatus !== 'validated') return -1;
+      if (a.validationStatus !== 'validated' && b.validationStatus === 'validated') return 1;
+      return 0;
+    });
+  }, [items]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -97,7 +105,7 @@ export default function Validation() {
           <div>Loading...</div>
         ) : (
           <div className="space-y-3">
-            {items.map(p => (
+            {sortedItems.map(p => (
               <Card
                 key={p._id || p.id}
                 className={`p-3 ${p.validationStatus === 'validated' ? 'post-validated' : ''}`}

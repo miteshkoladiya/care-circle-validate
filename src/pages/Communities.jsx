@@ -23,7 +23,7 @@ export default function Communities() {
   const [requestForm, setRequestForm] = useState({ name: "", description: "", category: "" });
   const [posts, setPosts] = useState([]);
   const [commentTextById, setCommentTextById] = useState({});
-  const [joinRequests, setJoinRequests] = useState([]);
+
   const [communityRequests, setCommunityRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token, user, refreshUser } = useAuth();
@@ -53,11 +53,7 @@ export default function Communities() {
     if (token && user && (user.role === "Admin" || user.role === "SuperAdmin")) {
       (async () => {
         try {
-          const r1 = await fetch(`${API}/api/admin/join-requests`, { headers: { Authorization: `Bearer ${token}` } });
-          if (r1.ok) {
-            const j1 = await r1.json().catch(()=>({}));
-            setJoinRequests(j1.requests || []);
-          }
+
           const r2 = await fetch(`${API}/api/admin/community-requests`, { headers: { Authorization: `Bearer ${token}` } });
           if (r2.ok) {
             const j2 = await r2.json().catch(()=>({}));
@@ -229,28 +225,7 @@ export default function Communities() {
         {/* Admin-only panels (unchanged) */}
         {(user?.role === 'Admin' || user?.role === 'SuperAdmin') && (
           <div className="mt-6 space-y-6">
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle>Join Requests</CardTitle>
-                <CardDescription>Users requesting to join communities</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {joinRequests.map(r => (
-                    <div key={r._id} className="flex items-center justify-between p-3 border rounded">
-                      <div>
-                        <div className="font-medium">{r.userId?.name}</div>
-                        <div className="text-xs text-muted-foreground">{r.userId?.email} → {r.communityId?.name}</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={async ()=>{ const res = await fetch(`${API}/api/admin/join-requests/${r._id}/approve`, { method:'POST', headers: { Authorization:`Bearer ${token}` } }); if (res.ok) { toast({ title:'Approved' }); setJoinRequests(prev=>prev.filter(x=>x._id!==r._id)); }}}>Approve</Button>
-                        <Button size="sm" variant="destructive" onClick={async ()=>{ const reason = window.prompt('Reason'); const res = await fetch(`${API}/api/admin/join-requests/${r._id}/reject`, { method:'POST', headers: { Authorization:`Bearer ${token}`, 'Content-Type':'application/json' }, body: JSON.stringify({ reason }) }); if (res.ok) { toast({ title:'Rejected' }); setJoinRequests(prev=>prev.filter(x=>x._id!==r._id)); }}}>Reject</Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+
 
             <Card className="shadow-card">
               <CardHeader>

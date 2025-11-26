@@ -16,6 +16,10 @@ import NotFound from "./pages/NotFound.jsx";
 import RequireAdmin from "./components/RequireAdmin.jsx";
 import ChatWidget from './components/ChatWidget';
 import { useAuth } from "@/contexts/AuthContext";
+import TermsOfService from "./pages/TermsOfService.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +51,10 @@ const FullApp = () => (
           <Route path="/communities/:id" element={<CommunityPosts />} />
           <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
           <Route path="/validation" element={<RequirePrivileged><Validation /></RequirePrivileged>} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

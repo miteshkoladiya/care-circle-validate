@@ -417,6 +417,14 @@ export default function Admin() {
     }
   };
 
+  const sortedPendingPosts = React.useMemo(() => {
+    return [...pendingPosts].sort((a, b) => {
+      if (a.validationStatus === 'validated' && b.validationStatus !== 'validated') return -1;
+      if (a.validationStatus !== 'validated' && b.validationStatus === 'validated') return 1;
+      return 0;
+    });
+  }, [pendingPosts]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -541,7 +549,7 @@ export default function Admin() {
           <div>
             <h2 className="text-lg font-semibold mb-3">Pending AI Posts</h2>
             <div className="space-y-3">
-              {pendingPosts.map(p => (
+              {sortedPendingPosts.map(p => (
                 <Card
                   key={p._id || p.id}
                   className={`p-3 ${p.validationStatus === 'validated' ? 'post-validated' : ''}`}

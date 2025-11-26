@@ -231,4 +231,39 @@ router.get("/doctor-count", async (_req, res) => {
 
 
 
+router.post('/users/:id/role', authMiddleware, requireRoles('Admin','SuperAdmin'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    if (!['Patient', 'Doctor', 'Admin', 'SuperAdmin'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    user.role = role;
+    await user.save();
+    
+    const { password, ...userData } = user.toObject();
+    return res.json({ user: userData });
+  } catch (e) {
+    console.error('[admin] POST /users/:id/role failed', e);
+    return res.status(500).json({ message: 'Update failed', error: String(e) });
+  }
+});
+
+router.delete('/users/:id', authMiddleware, requireRoles('Admin','SuperAdmin'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    await User.findByIdAndDelete(id);
+    return res.json({ message: 'User deleted successfully' });
+  } catch (e) {
+    console.error('[admin] DELETE /users/:id failed', e);
+    return res.status(500).json({ message: 'Delete failed', error: String(e) });
+  }
+});
+
 module.exports = router;

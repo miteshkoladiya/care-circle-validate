@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+﻿const { Schema, model } = require("mongoose");
 
 const UserSchema = new Schema(
   {
@@ -8,11 +8,13 @@ const UserSchema = new Schema(
     role: { type: String, enum: ["Patient", "Doctor", "Admin", "SuperAdmin"], default: "Patient" },
     avatar: { type: String, default: "" },
     isVerified: { type: Boolean, default: false },
-  doctorDocument: { type: String, default: "" },
-  registrationNumber: { type: String, default: "" },
-  age: { type: Number },
-  contactNumber: { type: String, default: "" },
-  communities: [{ type: require('mongoose').Schema.Types.ObjectId, ref: 'Community' }],
+    doctorDocument: { type: String, default: "" },
+    registrationNumber: { type: String, default: "" },
+    age: { type: Number },
+    contactNumber: { type: String, default: "" },
+    communities: [{ type: require("mongoose").Schema.Types.ObjectId, ref: "Community" }],
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
   },
   { timestamps: true }
 );

@@ -123,7 +123,8 @@ export default function CommunityPosts() {
 
   const deleteComment = async (post, c) => {
     const isOwner = currentUserId && String(c.authorId) === currentUserId;
-    if (!isOwner) { toast({ title: "Not allowed", description: "Only the author can delete their comment" }); return; }
+    const isAdmin = user?.role === 'Admin' || user?.role === 'SuperAdmin';
+    if (!isOwner && !isAdmin) { toast({ title: "Not allowed", description: "You cannot delete this comment" }); return; }
     try {
       const res = await fetch(`${API}/api/posts/${post._id}/comment/${c._id}`, {
         method: "DELETE",
@@ -204,7 +205,7 @@ export default function CommunityPosts() {
                           alt=""
                         />
                       )}
-                      <div className="mt-3">
+                      <div className="mt-3 flex items-center justify-between flex-wrap gap-2">
                         <ReactionBar
                           post={post}
                           API={API}
@@ -215,6 +216,11 @@ export default function CommunityPosts() {
                           }
                           onLoginRequired={() => toast({ title: "Login required", description: "Please log in to react" })}
                         />
+                        <Button variant="ghost" size="sm" onClick={() => toggleComments(post._id || post.id)}>
+                          <MessageSquare className="h-4 w-4 mr-2" />
+                          {commentCount > 0 ? `${commentCount} Replies` : 'Reply'}
+                          {open ? <ChevronDown className="h-3 w-3 ml-1" /> : <ChevronRight className="h-3 w-3 ml-1" />}
+                        </Button>
                       </div>
                       {open && (
                         <div className="mt-4 border-t pt-3 space-y-3">
@@ -237,8 +243,9 @@ export default function CommunityPosts() {
 
                           <div className="space-y-2 max-h-60 overflow-auto pr-1">
                             {(post.comments || []).map((c) => {
-                              // show delete only for owner
+                              // show delete for owner or admin
                               const isOwner = !!currentUserId && String(c?.authorId && (c.authorId._id || c.authorId)) === currentUserId;
+                              const isAdmin = user?.role === 'Admin' || user?.role === 'SuperAdmin';
                               return (
                                 <div key={c._id} className="group rounded-lg px-3 py-2 bg-muted/40 border flex justify-between items-start">
                                   <div className="text-sm flex-1">
@@ -246,7 +253,7 @@ export default function CommunityPosts() {
                                     <div className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleString()}</div>
                                     <div className="mt-1 whitespace-pre-wrap">{c.content}</div>
                                   </div>
-                                  {isOwner && (
+                                  {(isOwner || isAdmin) && (
                                     <Button
                                       size="icon"
                                       variant="ghost"

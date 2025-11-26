@@ -2,104 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    /* White and red healthcare theme */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
+    /* Modern HealthTech Theme - Violet/Indigo & Slate */
+    --background: 210 40% 98%;
+    /* Very light cool gray */
+    --foreground: 222 47% 11%;
+    /* Deep slate */
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Primary red - professional medical */
-    --primary: 0 84% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 0 84% 55%;
+    /* Vibrant Violet Primary */
+    --primary: 252 87% 67%;
+    /* Soft but vibrant violet */
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 252 87% 60%;
 
-    /* Soft white/gray tones */
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 9%;
+    /* Soft Slate Secondary */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Light red accent */
-    --accent: 0 84% 60%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 0 45% 93%;
+    /* Accent for subtle highlights */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 11.2%;
+    --accent-light: 252 87% 96%;
 
-    /* Status colors */
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-    --warning: 43 96% 56%;
-    --warning-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    /* Status colors - Modernized */
+    --success: 150 100% 35%;
+    /* Emerald */
+    --success-foreground: 210 40% 98%;
+    --warning: 35 95% 55%;
+    /* Amber */
+    --warning-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 213 27% 84%;
-    --input: 213 27% 84%;
-    --ring: 213 89% 42%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 252 87% 67%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    /* More rounded corners */
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 0 0% 9%;
-    --foreground: 0 0% 96%;
+    --background: 222 47% 11%;
+    /* Deep slate blue background */
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 11%;
-    --card-foreground: 0 0% 96%;
+    --card: 222 47% 10%;
+    /* Slightly darker than bg */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 11%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 0 84% 65%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 0 84% 60%;
+    --primary: 252 87% 67%;
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 252 87% 60%;
 
-    --secondary: 0 0% 18%;
-    --secondary-foreground: 0 0% 96%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 0 84% 65%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 0 25% 15%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --accent-light: 252 30% 20%;
 
-    --success: 142 76% 45%;
-    --success-foreground: 0 0% 100%;
-    --warning: 43 96% 65%;
-    --warning-foreground: 0 0% 100%;
-    --destructive: 0 84% 70%;
-    --destructive-foreground: 0 0% 100%;
+    --success: 150 70% 45%;
+    --success-foreground: 210 40% 98%;
+    --warning: 35 90% 60%;
+    --warning-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 213 19% 18%;
-    --input: 213 19% 18%;
-    --ring: 213 89% 55%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 252 87% 67%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -111,18 +109,30 @@ All colors MUST be HSL.
   }
 }
 
-/* Medical-specific gradients and effects */
+/* Modern gradients and effects */
 :root {
-  --gradient-healthcare: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+  --gradient-healthcare: linear-gradient(135deg, hsl(var(--primary)), hsl(260 90% 60%));
   --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
-  --shadow-healthcare: 0 10px 30px -10px hsl(var(--primary) / 0.15);
-  --shadow-card: 0 4px 6px -1px hsl(var(--primary) / 0.1);
+  --shadow-healthcare: 0 10px 40px -10px hsl(var(--primary) / 0.3);
+  --shadow-card: 0 4px 20px -2px hsl(var(--foreground) / 0.05);
 }
 
 /* Responsive base typography */
-html { font-size: 14px; }
-@media (min-width: 640px) { html { font-size: 15px; } }
-@media (min-width: 1024px) { html { font-size: 16px; } }
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+}
 
 /* Card helpers */
 .card-clickable {
@@ -140,9 +150,10 @@ html { font-size: 14px; }
   will-change: transform;
   transform-origin: center;
 }
+
 .community-cover:hover {
   transform: scale(1.04);
-  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
 }
 
 /* smaller preview variant for admin list/preview */
@@ -151,9 +162,10 @@ html { font-size: 14px; }
   will-change: transform;
   transform-origin: center;
 }
+
 .community-cover-sm:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
 }
 
 /* Chat widget responsive tweaks */
@@ -172,34 +184,52 @@ html { font-size: 14px; }
 
 /* Accessibility: focus-visible outlines for keyboard users */
 :focus-visible {
-  outline: 2px solid rgba(59,130,246,0.6);
+  outline: 2px solid rgba(59, 130, 246, 0.6);
   outline-offset: 2px;
 }
 
 /* small screens: reduce container padding for denser layout */
 @media (max-width: 420px) {
-  .container { padding-left: 0.5rem; padding-right: 0.5rem; }
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }
 
 /* Chat icon gentle motion (only when closed) */
 @keyframes chat-icon-bounce {
-  0% { transform: translateY(0); }
-  40% { transform: translateY(-6px) scale(1.02); }
-  70% { transform: translateY(-2px) scale(1.01); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-6px) scale(1.02);
+  }
+
+  70% {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
+
 .chat-icon-animate {
-  animation: chat-icon-bounce 2.2s cubic-bezier(.22,.9,.35,1) infinite;
+  animation: chat-icon-bounce 2.2s cubic-bezier(.22, .9, .35, 1) infinite;
 }
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .chat-icon-animate { animation: none !important; }
+  .chat-icon-animate {
+    animation: none !important;
+  }
 }
 
 .post-validated {
   @apply border-2 border-green-300 bg-green-50 relative;
 }
+
 .post-validated::after {
   content: "Validated";
   @apply absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full bg-green-600 text-white tracking-wide;

@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models/User");
 const { authMiddleware } = require("../middleware/auth");
@@ -145,6 +146,78 @@ router.put("/me", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error('[auth] PUT /me failed', err);
     res.status(500).json({ message: 'Failed to update user' });
+  }
+});
+
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const token = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    console.log(`[AUTH] Password reset token for ${email}: ${token}`);
+
+    console.log(`[AUTH] Password reset token for ${email}: ${token}`);
+
+    // Create Ethereal Test Account (Auto-generated)
+    const nodemailer = require("nodemailer");
+    const testAccount = await nodemailer.createTestAccount();
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testAccount.user, // generated ethereal user
+        pass: testAccount.pass, // generated ethereal password
+      },
+    });
+
+    const mailOptions = {
+      from: '"CareCircle Support" <support@carecircle.com>',
+      to: email,
+      subject: "Password Reset - CareCircle",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
+            `Please click on the following link, or paste this into your browser to complete the process:\n\n` +
+            `http://localhost:5173/reset-password?token=${token}\n\n` +
+            `If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[AUTH] Email sent: ${info.messageId}`);
+    console.log(`[AUTH] Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+
+    res.json({ message: "Password reset email sent. Check backend logs for Preview URL." });
+  } catch (err) {
+    console.error("Email send error:", err);
+    res.status(500).json({ message: "Error sending email. Please check server logs." });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
