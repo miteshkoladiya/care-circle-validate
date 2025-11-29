@@ -5,6 +5,7 @@ const { requireRoles } = require("../middleware/authorize");
 const { getIo } = require("../socket");
 const { Community } = require("../models/Community");
 const { User } = require("../models/User");
+const mongoose = require("mongoose");
 
 const router = Router();
 
@@ -33,6 +34,54 @@ router.get('/validation-feed', authMiddleware, requireRoles('Doctor', 'Admin', '
     res.json({ posts });
   } catch (e) {
     console.error('validation-feed error', e);
+    res.status(500).json({ message: 'Load failed', error: String(e) });
+  }
+});
+
+router.get('/user-stats', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
+    // Aggregation for reactions
+    const reactionsAgg = await Post.aggregate([
+      { $unwind: "$reactions" },
+      { $match: { "reactions.by": userObjectId } },
+      { $count: "count" }
+    ]);
+    const reactionsCount = reactionsAgg.length > 0 ? reactionsAgg[0].count : 0;
+
+    // Aggregation for comments
+    const commentsAgg = await Post.aggregate([
+      { $unwind: "$comments" },
+      { $match: { "comments.authorId": userObjectId } },
+      { $count: "count" }
+    ]);
+    const commentsCount = commentsAgg.length > 0 ? commentsAgg[0].count : 0;
+
+    res.json({ reactions: reactionsCount, comments: commentsCount });
+  } catch (e) {
+    console.error('user-stats error', e);
+    res.status(500).json({ message: 'Load failed', error: String(e) });
+  }
+});
+
+router.get('/doctor-stats', authMiddleware, requireRoles("Doctor", "Admin", "SuperAdmin"), async (req, res) => {
+  try {
+    const userName = req.user.name;
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    
+    // Count posts validated by this user (editedBy matches name) in the last week
+    // Note: 'updatedAt' is a good proxy for validation time if we assume validation updates the doc
+    const count = await Post.countDocuments({
+      validationStatus: 'validated',
+      editedBy: userName,
+      updatedAt: { $gte: weekAgo }
+    });
+
+    res.json({ validatedCount: count });
+  } catch (e) {
+    console.error('doctor-stats error', e);
     res.status(500).json({ message: 'Load failed', error: String(e) });
   }
 });

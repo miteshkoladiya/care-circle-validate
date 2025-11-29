@@ -35,6 +35,7 @@ const ChatWidgetGate = () => {
   return <ChatWidget />;
 };
 
+
 const FullApp = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>

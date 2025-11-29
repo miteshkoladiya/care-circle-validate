@@ -137,9 +137,20 @@ export default function Dashboard() {
 }
 
 function PatientDashboard({ communities, recentQuestions }) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const API = getApiUrl();
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ reactions: 0, comments: 0 });
+
+  useEffect(() => {
+    if (!token) return;
+    fetch(`${API}/api/posts/user-stats`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.json())
+      .then(data => {
+         if(data) setStats({ reactions: data.reactions || 0, comments: data.comments || 0 });
+      })
+      .catch(err => console.error(err));
+  }, [API, token]);
   // modal-based post view removed; navigation to /communities/:id is used
   // const [selectedCommunity, setSelectedCommunity] = useState(null);
   // const [posts, setPosts] = useState([]);
@@ -180,34 +191,7 @@ function PatientDashboard({ communities, recentQuestions }) {
     return false;
   }), [recentQuestions, userId, userName]);
   const questionsAskedCount = userPosts.length;
-  const helpfulReactionsCount = useMemo(() => {
-    return userPosts.reduce((s, p) => {
-      // 1) reactions as array of { by, type }
-      if (Array.isArray(p.reactions)) {
-        const r = p.reactions.filter(x => String(x.type || '').toLowerCase() === 'helpful').length;
-        return s + r;
-      }
-      // 2) reactions as counts map { like: 1, helpful: 2 }
-      if (p.reactions && typeof p.reactions === 'object') {
-        const val = p.reactions.helpful ?? p.reactions['helpful'] ?? 0;
-        return s + Number(val || 0);
-      }
-      // 3) some endpoints may attach a 'counts' object
-      if (p.counts && typeof p.counts === 'object') {
-        const val = p.counts.helpful ?? p.counts['helpful'] ?? 0;
-        return s + Number(val || 0);
-      }
-      return s;
-    }, 0);
-  }, [userPosts]);
 
-  const weeklyEngagement = useMemo(() => {
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    return userPosts.filter(p => {
-      const t = p.createdAt ? new Date(p.createdAt).getTime() : 0;
-      return t >= weekAgo;
-    }).length;
-  }, [userPosts]);
 
   return (
     <div className="space-y-6">
@@ -230,29 +214,29 @@ function PatientDashboard({ communities, recentQuestions }) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{questionsAskedCount}</div>
-            <p className="text-xs text-muted-foreground">This dataset</p>
+            <p className="text-xs text-muted-foreground">Total questions you asked</p>
           </CardContent>
         </Card>
 
         <Card className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Helpful Reactions</CardTitle>
+            <CardTitle className="text-sm font-medium">Reactions</CardTitle>
             <Heart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{helpfulReactionsCount}</div>
-            <p className="text-xs text-muted-foreground">Helpful reactions received on your posts</p>
+            <div className="text-2xl font-bold">{stats.reactions}</div>
+            <p className="text-xs text-muted-foreground">Total reactions you made</p>
           </CardContent>
         </Card>
 
         <Card className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Weekly Engagement</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Comments</CardTitle>
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{weeklyEngagement}</div>
-            <p className="text-xs text-muted-foreground">Posts & replies in the last 7 days</p>
+            <div className="text-2xl font-bold">{stats.comments}</div>
+            <p className="text-xs text-muted-foreground">Total comments you posted</p>
           </CardContent>
         </Card>
       </div>
@@ -330,6 +314,17 @@ function DoctorDashboard({ recentQuestions }) {
   const API = getApiUrl();
   const { toast } = useToast();
   const [pending, setPending] = useState([]);
+  const [stats, setStats] = useState({ validatedCount: 0 });
+
+  useEffect(() => {
+    if (!token) return;
+    fetch(`${API}/api/posts/doctor-stats`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.json())
+      .then(data => {
+         if(data) setStats({ validatedCount: data.validatedCount || 0 });
+      })
+      .catch(err => console.error(err));
+  }, [API, token]);
 
   useEffect(() => {
     async function loadPending() {
@@ -390,23 +385,14 @@ function DoctorDashboard({ recentQuestions }) {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pending.filter(p => p.validationStatus === 'validated').length}</div>
+            <div className="text-2xl font-bold">{stats.validatedCount}</div>
             <p className="text-xs text-muted-foreground">Posts you validated</p>
           </CardContent>
         </Card>
 
         {/* Removed Average Response Time card */}
         {/* Keep Expert Endorsements */}
-        <Card className="shadow-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Expert Endorsements</CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <p className="text-xs text-muted-foreground">Doctors recommended</p>
-          </CardContent>
-        </Card>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
