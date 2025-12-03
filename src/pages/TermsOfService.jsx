@@ -1,12 +1,12 @@
 import React from "react";
-import { Navbar } from "@/components/Layout/Navbar";
+import { PublicNavbar } from "@/components/Layout/PublicNavbar";
 import { Footer } from "@/components/Layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
+      <PublicNavbar />
       <div className="container mx-auto p-6 flex-1">
         <Card className="max-w-4xl mx-auto shadow-sm">
           <CardHeader>

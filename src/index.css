@@ -234,3 +234,17 @@ html {
   content: "Validated";
   @apply absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full bg-green-600 text-white tracking-wide;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html,
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}

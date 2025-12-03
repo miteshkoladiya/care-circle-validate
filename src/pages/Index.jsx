@@ -9,6 +9,8 @@ import { getApiUrl } from "@/lib/api";
 import { Footer } from "@/components/Layout/Footer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { PublicNavbar } from "@/components/Layout/PublicNavbar";
+
 const Index = () => {
   const navigate = useNavigate();
 
@@ -72,20 +74,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 bg-primary/10 rounded-lg">
-              <Heart className="h-6 w-6 text-primary fill-primary/20" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent">CareCircle</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => navigate("/login")} className="hidden sm:flex">Sign In</Button>
-            <Button onClick={() => navigate("/register")} className="shadow-lg shadow-primary/20">Get Started</Button>
-          </div>
-        </div>
-      </nav>
+      <PublicNavbar />
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 overflow-hidden">

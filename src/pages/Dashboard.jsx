@@ -604,7 +604,7 @@ function AdminDashboard({ communities, recentQuestions, token, api }) {
                     {d.doctorDocument && (
                       <Button size="sm" onClick={() => openDocPreview(d)}>View</Button>
                     )}
-                    <Button size="sm" onClick={() => approve(d._id)} disabled={!viewedDocs.has(d._id)}>Approve</Button>
+                    <Button size="sm" onClick={() => approveDoctor(d._id)} disabled={!viewedDocs.has(d._id)}>Approve</Button>
                     <Button size="sm" variant="destructive" onClick={() => startReject(d._id)}>Reject</Button>
                   </div>
                 </div>

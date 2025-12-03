@@ -75,3 +75,6 @@ Thumbs.db
 ############################
 *.log
 logs/
+
+!ML_model/rag_service.py
+!backend/src/models/User.js

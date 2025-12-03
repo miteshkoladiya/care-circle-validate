@@ -230,7 +230,7 @@ export default function ChatWidget() {
               <div className="mt-2 flex justify-between items-center px-1">
                 <div className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Sparkles className="h-3 w-3 text-primary/50" />
-                  <span>AI-generated content • Verify with a doctor</span>
+                  <span>AI-generated content</span>
                 </div>
                 <Button
                   onClick={async () => {

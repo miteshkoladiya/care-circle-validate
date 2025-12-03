@@ -17,7 +17,6 @@ import { useAuth } from "@/contexts/AuthContext";
 export function Navbar({ user: userProp, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [notifications] = useState(3);
 
   const auth = useAuth();
   const user = userProp || auth.user;
@@ -45,7 +44,7 @@ export function Navbar({ user: userProp, onLogout }) {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-all duration-200">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center space-x-6">
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="" className="flex items-center space-x-2 group">
             <div className="p-1.5 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
               <Heart className="h-6 w-6 text-primary fill-primary/20" />
             </div>

@@ -191,8 +191,12 @@ router.post('/users/:id/approve', authMiddleware, requireRoles('Admin','SuperAdm
     console.log('[admin] POST /users/:id/approve', { id, by: req.user && req.user.id });
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: 'User not found' });
+    
     user.isVerified = true;
+    user.markModified('isVerified'); // Ensure change is tracked
     await user.save();
+    console.log('[admin] User approved:', user._id, user.isVerified);
+    
     const { password, ...userData } = user.toObject();
     return res.json({ user: userData });
   } catch (e) {

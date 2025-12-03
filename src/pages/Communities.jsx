@@ -139,7 +139,7 @@ export default function Communities() {
             <div className="w-full md:w-96">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/70" />
-                <Input className="pl-10" placeholder="Search communities..." value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)} />
+                <Input className="pl-10 text-black" placeholder="Search communities..." value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)} />
               </div>
             </div>
           </div>

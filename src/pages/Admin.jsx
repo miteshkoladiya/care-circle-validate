@@ -350,9 +350,11 @@ export default function Admin() {
   };
 
   const approve = async (id) => {
+    console.log('Approving user:', id);
     try {
       const res = await fetch(`${API}/api/admin/users/${id}/approve`, { method: "POST", headers: token ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } : { "Content-Type": "application/json" } });
       const json = await res.json();
+      console.log('Approve response:', json);
       if (res.ok) {
         toast({ title: "Approved", description: `${json.user.name} is verified` });
         setUsers((u) => u.map((item) => (item._id === id || item.id === id ? json.user : item)));
@@ -360,6 +362,7 @@ export default function Admin() {
         toast({ title: "Approve failed", description: json.message || "Unable to approve" });
       }
     } catch (err) {
+      console.error('Approve error:', err);
       toast({ title: "Approve failed", description: err?.message || String(err) });
     }
   };
@@ -435,9 +438,9 @@ export default function Admin() {
             <Button variant={tab === 'users' ? undefined : 'ghost'} onClick={() => setTab('users')}>Users</Button>
             <Button variant={tab === 'communities' ? undefined : 'ghost'} onClick={() => setTab('communities')}>Create Community</Button>
             <Button variant={tab === 'posts' ? undefined : 'ghost'} onClick={() => setTab('posts')}>Posts</Button>
-            {user && (user.role === 'Admin' || user.role === 'SuperAdmin') && (
+            {/* {user && (user.role === 'Admin' || user.role === 'SuperAdmin') && (
               <Button variant="secondary" onClick={generateNow} disabled={generating}>{generating ? 'Generating...' : 'Generate Now'}</Button>
-            )}
+            )} */}
           </div>
           {lastGenResponse && (
             <div className="mt-3">
