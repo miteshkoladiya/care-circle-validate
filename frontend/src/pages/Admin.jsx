@@ -296,58 +296,7 @@ export default function Admin() {
     } catch (e) { toast({ title: 'Edit failed', description: e?.message || String(e) }); }
   };
 
-  const [generating, setGenerating] = useState(false);
-  const [lastGenResponse, setLastGenResponse] = useState(null);
-  const generateNow = async () => {
-    setGenerating(true);
-    try {
-      const res = await fetch(`${API}/api/admin/generate-now`, {
-        method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } : { "Content-Type": "application/json" },
-      });
-      const json = await res.json().catch(()=>({}));
-      if (!res.ok) { toast({ title: 'Generation failed', description: json?.error || `HTTP ${res.status}` }); setGenerating(false); return; }
-      const jobId = json.jobId;
-      if (!jobId) { toast({ title: 'Generation failed', description: 'No jobId returned' }); setGenerating(false); return; }
 
-      // poll job status until done; stop polling if user navigates away or unmounts
-      let mounted = true;
-      const pollInterval = 1500;
-      const poll = async () => {
-        try {
-          const s = await fetch(`${API}/api/admin/generate-status/${jobId}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-          const j = await s.json().catch(()=>({}));
-          if (!mounted) return;
-          if (s.ok && j.state === 'done') {
-            setPendingPosts(prev => [...(j.result?.created || []), ...(prev || [])]);
-            setLastGenResponse(JSON.stringify(j.result || {}, null, 2));
-            setGenerating(false);
-            return;
-          }
-          if (s.ok && j.state === 'running') {
-            // optionally show progress counts
-            setLastGenResponse(JSON.stringify({ running: true, partial: j.result || {} }, null, 2));
-          }
-        } catch (e) {
-          // ignore transient errors
-        }
-        if (mounted) setTimeout(poll, pollInterval);
-      };
-      poll();
-
-      // stop loading when user navigates away or closes tab
-      const stopPolling = () => { mounted = false; setGenerating(false); };
-      window.addEventListener('beforeunload', stopPolling);
-      const unblock = history.listen(() => stopPolling());
-      // cleanup when done/unmount
-      const cleanup = () => { mounted = false; window.removeEventListener('beforeunload', stopPolling); unblock(); setGenerating(false); };
-      // clear on component unmount
-      // store cleanup reference to be used in useEffect cleanup (not shown here)
-    } catch (err) {
-      toast({ title: "Generation failed", description: String(err) });
-      setGenerating(false);
-    }
-  };
 
   const approve = async (id) => {
     console.log('Approving user:', id);
@@ -438,26 +387,9 @@ export default function Admin() {
             <Button variant={tab === 'users' ? undefined : 'ghost'} onClick={() => setTab('users')}>Users</Button>
             <Button variant={tab === 'communities' ? undefined : 'ghost'} onClick={() => setTab('communities')}>Create Community</Button>
             <Button variant={tab === 'posts' ? undefined : 'ghost'} onClick={() => setTab('posts')}>Posts</Button>
-            {/* {user && (user.role === 'Admin' || user.role === 'SuperAdmin') && (
-              <Button variant="secondary" onClick={generateNow} disabled={generating}>{generating ? 'Generating...' : 'Generate Now'}</Button>
-            )} */}
+
           </div>
-          {lastGenResponse && (
-            <div className="mt-3">
-              <div className="bg-slate-50 border rounded p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="font-medium">Generation debug response</div>
-                  <div className="flex space-x-2">
-                    <Button size="sm" onClick={async () => {
-                      try { await navigator.clipboard.writeText(lastGenResponse); toast({ title: 'Copied', description: 'Response copied to clipboard' }); } catch (e) { toast({ title: 'Copy failed', description: String(e) }); }
-                    }}>Copy</Button>
-                    <Button size="sm" variant="ghost" onClick={() => setLastGenResponse(null)}>Clear</Button>
-                  </div>
-                </div>
-                <pre className="text-xs overflow-auto max-h-48 p-2 bg-white border rounded">{lastGenResponse}</pre>
-              </div>
-            </div>
-          )}
+
         </div>
 
 

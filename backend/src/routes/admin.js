@@ -6,82 +6,10 @@ const { Post } = require("../models/Post");
 const { User } = require("../models/User");
 const { JoinRequest } = require("../models/JoinRequest");
 const { CommunityRequest } = require("../models/CommunityRequest");
-const { createJob, setJobRunning, setJobDone, appendJobError, registerRunningProcess, clearRunningProcess } = require('../services/generationJobs');
-const { runGeneratorAsync } = require('../services/pythonGenerator');
 const { getIo } = require('../socket');
 const router = Router();
 
-// Replace synchronous generate-now with background job creator
-router.post("/generate-now", authMiddleware, requireRoles("Admin","SuperAdmin"), async (req, res) => {
-  try {
-    const job = createJob({ type: 'generate-now', requestedBy: req.user?.id });
-    // respond immediately with jobId
-    res.json({ ok: true, jobId: job.id });
 
-    // start background worker (not awaited)
-    (async () => {
-      try {
-        setJobRunning(job.id);
-        // emit job started
-        try { getIo()?.emit?.('job:updated', { jobId: job.id, state: 'running', progress: { createdCount: 0, processed: 0 } }); } catch (e) { /* ignore */ }
-        const slots = ["morning","evening","night"];
-        const communities = await Community.find().lean();
-        const created = [];
-        const errors = [];
-        const today = new Date().toISOString().slice(0,10);
-        let processed = 0;
-        for (const c of communities) {
-          for (const slot of slots) {
-            // run generator async
-            const out = await runGeneratorAsync(c.name, slot, { num: 1, timeout: 120000, csvOnly: false });
-            // register process for potential cancellation/inspection
-            if (out && out.pid) registerRunningProcess(job.id, out.pid);
-            if (!out || !out.ok) {
-              const info = { community: c.name, slot, error: out?.error || 'no_output', stdout: out?.raw || '', stderr: out?.stderr || '' };
-              errors.push(info);
-              appendJobError(job.id, JSON.stringify(info));
-              // emit progress update with error recorded
-              try { getIo()?.emit?.('job:updated', { jobId: job.id, state: 'running', progress: { createdCount: created.length, processed: ++processed }, lastError: info }); } catch (e) { /* ignore */ }
-              continue;
-            }
-            const items = Array.isArray(out.json) ? out.json : [out.json];
-            for (const item of items) {
-              const title = String(item.title || `${c.name} Tip`).trim();
-              const content = String(item.content || item.text || '').trim();
-              if (!content || content.length < 20) {
-                const info = { community: c.name, slot, reason: 'empty_or_too_short', raw: item };
-                errors.push(info);
-                appendJobError(job.id, JSON.stringify(info));
-                try { getIo()?.emit?.('job:updated', { jobId: job.id, state: 'running', progress: { createdCount: created.length, processed: ++processed }, lastError: info }); } catch (e) { /* ignore */ }
-                continue;
-              }
-              const exists = await Post.findOne({ community: c.name, $or: [{ title }, { content }], validationStatus: { $ne: 'rejected' } });
-              if (exists) { processed++; continue; }
-              const p = await Post.create({ title, content, community: c.name, authorName: 'DailyTipBot', aiGenerated: true, validationStatus: 'pending', published: false, timeOfDay: slot, scheduledDate: today });
-              created.push({ _id: p._id, title: p.title, community: p.community });
-              // emit progress after creating an item
-              try { getIo()?.emit?.('job:updated', { jobId: job.id, state: 'running', progress: { createdCount: created.length, processed: ++processed } }); } catch (e) { /* ignore */ }
-            }
-          }
-        }
-
-        // emit final update before marking done
-        try { getIo()?.emit?.('job:updated', { jobId: job.id, state: 'done', result: { createdCount: created.length, created, errors } }); } catch (e) { /* ignore */ }
-        setJobDone(job.id, { createdCount: created.length, created, errors });
-      } catch (bgErr) {
-        appendJobError(job.id, JSON.stringify({ error: String(bgErr) }));
-        try { getIo()?.emit?.('job:updated', { jobId: job.id, state: 'failed', error: String(bgErr) }); } catch (e) { /* ignore */ }
-        setJobDone(job.id, { createdCount: 0, created: [], errors: [String(bgErr)] });
-      } finally {
-        // clear any registered processes for this job
-        clearRunningProcess(job.id);
-      }
-    })();
-  } catch (err) {
-    console.error('generate-now failed', err);
-    return res.status(500).json({ ok: false, error: String(err) });
-  }
-});
 
 // Admin: list users (without password) - used by Admin UI
 router.get('/users', authMiddleware, requireRoles('Admin','SuperAdmin'), async (req, res) => {

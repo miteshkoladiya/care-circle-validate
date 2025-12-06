@@ -28,19 +28,7 @@ export default [
     },
   },
 
-  // Backend (Node)
-  {
-    files: ["backend/**/*.js"],
-    languageOptions: {
-      ecmaVersion: 2020,
-      sourceType: "commonjs",
-      globals: globals.node,
-    },
-    rules: {
-      // Example: allow console in backend
-      "no-console": "off",
-    },
-  },
+
 
   // Ignore build stuff
   {

@@ -12,7 +12,7 @@ const adminRoutes = require("./routes/admin");
 const chatRoutes = require("./routes/chat");
 const http = require("http");
 const { initSocket } = require("./socket");
-const { initScheduler } = require("./services/scheduler");
+
 
 
 const app = express();
@@ -31,16 +31,21 @@ app.use("/api/posts", postsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/chat", chatRoutes);
 
+// Database connection logic
+const mongoUri = process.env.MONGO_URI;
+// If we are not running directly (e.g. Vercel), we should ensure DB is connecting
+if (require.main !== module) {
+  connectDB(mongoUri).catch(console.error);
+}
+
 async function start() {
   try {
-    const mongoUri = process.env.MONGO_URI;
     await connectDB(mongoUri);
     const server = http.createServer(app);
     // initialize sockets
     initSocket(server);
     server.listen(PORT, () => console.log(`Server listening on ${PORT}`));
-    // init scheduler (will no-op or schedule jobs)
-    try { initScheduler(); } catch (err) { console.error("Scheduler init failed", err); }
+
     return server;
   } catch (err) {
     console.error(err);
@@ -48,6 +53,8 @@ async function start() {
   }
 }
 
-start();
+if (require.main === module) {
+  start();
+}
 
 module.exports = app;
